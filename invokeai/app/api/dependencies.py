@@ -17,6 +17,7 @@ from ..services.board_records.board_records_sqlite import SqliteBoardRecordStora
 from ..services.boards.boards_default import BoardService
 from ..services.config import InvokeAIAppConfig
 from ..services.download import DownloadQueueService
+from ..services.events.events_fastapievents import FastAPIEventService
 from ..services.image_files.image_files_disk import DiskImageFileStorage
 from ..services.image_records.image_records_sqlite import SqliteImageRecordStorage
 from ..services.images.images_default import ImageService
@@ -32,7 +33,6 @@ from ..services.session_processor.session_processor_default import DefaultSessio
 from ..services.session_queue.session_queue_sqlite import SqliteSessionQueue
 from ..services.urls.urls_default import LocalUrlService
 from ..services.workflow_records.workflow_records_sqlite import SqliteWorkflowRecordsStorage
-from .events import FastAPIEventService
 
 
 # TODO: is there a better way to achieve this?
