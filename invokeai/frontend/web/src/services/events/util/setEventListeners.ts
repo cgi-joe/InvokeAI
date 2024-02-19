@@ -9,12 +9,10 @@ import {
   socketGraphExecutionStateComplete,
   socketInvocationComplete,
   socketInvocationError,
-  socketInvocationRetrievalError,
   socketInvocationStarted,
   socketModelLoadCompleted,
   socketModelLoadStarted,
   socketQueueItemStatusChanged,
-  socketSessionRetrievalError,
 } from 'services/events/actions';
 import type { ClientToServerEvents, ServerToClientEvents } from 'services/events/types';
 import type { Socket } from 'socket.io-client';
@@ -53,37 +51,21 @@ export const setEventListeners = (arg: SetEventListenersArg) => {
     }
   });
 
-  /**
-   * Disconnect
-   */
   socket.on('disconnect', () => {
     dispatch(socketDisconnected());
   });
-
-  /**
-   * Invocation started
-   */
   socket.on('invocation_started', (data) => {
     dispatch(socketInvocationStarted({ data }));
   });
 
-  /**
-   * Generator progress
-   */
-  socket.on('generator_progress', (data) => {
+  socket.on('invocation_denoise_progress', (data) => {
     dispatch(socketGeneratorProgress({ data }));
   });
 
-  /**
-   * Invocation error
-   */
   socket.on('invocation_error', (data) => {
     dispatch(socketInvocationError({ data }));
   });
 
-  /**
-   * Invocation complete
-   */
   socket.on('invocation_complete', (data) => {
     dispatch(
       socketInvocationComplete({
@@ -92,10 +74,7 @@ export const setEventListeners = (arg: SetEventListenersArg) => {
     );
   });
 
-  /**
-   * Graph complete
-   */
-  socket.on('graph_execution_state_complete', (data) => {
+  socket.on('session_complete', (data) => {
     dispatch(
       socketGraphExecutionStateComplete({
         data,
@@ -103,9 +82,6 @@ export const setEventListeners = (arg: SetEventListenersArg) => {
     );
   });
 
-  /**
-   * Model load started
-   */
   socket.on('model_load_started', (data) => {
     dispatch(
       socketModelLoadStarted({
@@ -114,34 +90,9 @@ export const setEventListeners = (arg: SetEventListenersArg) => {
     );
   });
 
-  /**
-   * Model load completed
-   */
-  socket.on('model_load_completed', (data) => {
+  socket.on('model_load_complete', (data) => {
     dispatch(
       socketModelLoadCompleted({
-        data,
-      })
-    );
-  });
-
-  /**
-   * Session retrieval error
-   */
-  socket.on('session_retrieval_error', (data) => {
-    dispatch(
-      socketSessionRetrievalError({
-        data,
-      })
-    );
-  });
-
-  /**
-   * Invocation retrieval error
-   */
-  socket.on('invocation_retrieval_error', (data) => {
-    dispatch(
-      socketInvocationRetrievalError({
         data,
       })
     );
