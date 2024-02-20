@@ -25,7 +25,7 @@ class EventType(str, Enum):
     DOWNLOAD = "download"
 
 
-class AppEvent(BaseModel, ABC):
+class BaseEvent(BaseModel, ABC):
     """Base class for all events. All events must inherit from this class.
 
     Events must define the following class attributes:
@@ -50,7 +50,7 @@ class AppEvent(BaseModel, ABC):
     model_config = ConfigDict(json_schema_serialization_defaults_required=True)
 
 
-TEvent = TypeVar("TEvent", bound=AppEvent)
+TEvent = TypeVar("TEvent", bound=BaseEvent)
 
 FastAPIEvent: TypeAlias = tuple[str, TEvent]
 """
@@ -64,7 +64,7 @@ class FastAPIEventFunc(Protocol):
         ...
 
 
-def register_events(events: list[type[AppEvent]], func: FastAPIEventFunc) -> None:
+def register_events(events: list[type[TEvent]], func: FastAPIEventFunc) -> None:
     """Register a function to handle a list of events.
 
     :param events: A list of event classes to handle
@@ -74,7 +74,7 @@ def register_events(events: list[type[AppEvent]], func: FastAPIEventFunc) -> Non
         local_handler.register(event_name=event.__event_name__, _func=func)
 
 
-class QueueEvent(AppEvent, ABC):
+class QueueEvent(BaseEvent, ABC):
     """Base class for queue events"""
 
     __event_type__ = EventType.QUEUE
@@ -333,7 +333,7 @@ class QueueClearedEvent(QueueEvent):
         return cls(queue_id=queue_id)
 
 
-class DownloadEvent(AppEvent, ABC):
+class DownloadEvent(BaseEvent, ABC):
     """Base class for events associated with a download"""
 
     __event_type__ = EventType.DOWNLOAD
@@ -409,7 +409,7 @@ class DownloadErrorEvent(DownloadEvent):
         return cls(source=source, error_type=error_type, error=error)
 
 
-class ModelEvent(AppEvent, ABC):
+class ModelEvent(BaseEvent, ABC):
     """Base class for events associated with a model"""
 
     __event_type__ = EventType.MODEL
