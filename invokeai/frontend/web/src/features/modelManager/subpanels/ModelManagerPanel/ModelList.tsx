@@ -5,10 +5,11 @@ import type { ChangeEvent, PropsWithChildren } from 'react';
 import { memo, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ALL_BASE_MODELS } from 'services/api/constants';
-import type { LoRAConfig, MainModelConfig } from 'services/api/endpoints/models';
+// import type { LoRAConfig, MainModelConfig } from 'services/api/endpoints/models';
 import { useGetLoRAModelsQuery, useGetMainModelsQuery } from 'services/api/endpoints/models';
 
 import ModelListItem from './ModelListItem';
+import { LoRAConfig, MainModelConfig } from '../../../../services/api/types';
 
 type ModelListProps = {
   selectedModelId: string | undefined;
@@ -139,10 +140,10 @@ const modelsFilter = <T extends MainModelConfig | LoRAConfig>(
       return;
     }
 
-    const matchesFilter = model.model_name.toLowerCase().includes(nameFilter.toLowerCase());
+    const matchesFilter = model.name.toLowerCase().includes(nameFilter.toLowerCase());
 
-    const matchesFormat = model_format === undefined || model.model_format === model_format;
-    const matchesType = model.model_type === model_type;
+    const matchesFormat = model_format === undefined || model.format === model_format;
+    const matchesType = model.type === model_type;
 
     if (matchesFilter && matchesFormat && matchesType) {
       filteredModels.push(model);
@@ -177,9 +178,9 @@ const ModelListWrapper = memo((props: ModelListWrapperProps) => {
         </Text>
         {modelList.map((model) => (
           <ModelListItem
-            key={model.id}
+            key={model.key}
             model={model}
-            isSelected={selected.selectedModelId === model.id}
+            isSelected={selected.selectedModelId === model.key}
             setSelectedModelId={selected.setSelectedModelId}
           />
         ))}
